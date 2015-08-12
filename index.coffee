@@ -1,7 +1,10 @@
 'use strict';
 util           = require 'util'
 {EventEmitter} = require 'events'
+elasticsearch  = require 'elasticsearch'
+_              = require 'lodash'
 debug          = require('debug')('meshblu-elasticsearch')
+request = require 'request'
 
 MESSAGE_SCHEMA =
   type: 'object'
@@ -25,14 +28,18 @@ class Plugin extends EventEmitter
     @options = {}
     @messageSchema = MESSAGE_SCHEMA
     @optionsSchema = OPTIONS_SCHEMA
+    @elasticsearch = new elasticsearch.Client host: 'localhost:9200'
 
   onMessage: (message) =>
-    payload = message.payload;
-    response =
-      devices: ['*']
-      topic: 'echo'
-      payload: payload
-    this.emit 'message', response
+    debug 'onMessage', message
+    return if message.topic == 'device-status'
+
+    topic = _.snakeCase message.topic
+
+    @elasticsearch.create
+      index: "event_#{topic}"
+      type: 'event'
+      body: message.payload
 
   onConfig: (device) =>
     @setOptions device.options
