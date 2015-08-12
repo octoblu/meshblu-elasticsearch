@@ -1,7 +1,7 @@
 {
   "name": "meshblu-elasticsearch",
   "repository": "octoblu/meshblu-elasticsearch",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "main": "connector.js",
   "scripts": {
     "preinstall": "node -e \"try{require('./skip-install.js')}catch(e){}\"",
