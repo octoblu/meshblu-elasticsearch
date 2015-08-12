@@ -28,7 +28,11 @@ class Plugin extends EventEmitter
     @options = {}
     @messageSchema = MESSAGE_SCHEMA
     @optionsSchema = OPTIONS_SCHEMA
-    @elasticsearch = new elasticsearch.Client host: 'localhost:9200'
+
+    @elasticsearch = new elasticsearch.Client
+      host:     process.env.ELASTICSEARCH_HOST
+      hostname: process.env.ELASTICSEARCH_HOSTNAME ? 'localhost'
+      port:     process.env.ELASTICSEARCH_PORT ? '9200'
 
   onMessage: (message) =>
     debug 'onMessage', message
